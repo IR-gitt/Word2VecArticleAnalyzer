@@ -22,30 +22,38 @@ public class AnalyzerResolutions {
     static String filePathModel =
             "src/main/java/analyzerWord2Vec/pathToWriteto2.txt";
 
+    static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt").toString();
+
     public static void main(String[] args) throws Exception {
         startAnalyzer();
     }
 
     public static void startAnalyzer() throws Exception {
         String sentence = "относительно компонентов таблица имеет ошибки";
-        // todo: может быть не одно решение
+
+        // todo: может быть не одно решение, сделать аналитический круг или диаграмму
         String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/law.txt").toString();
         String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt").toString();
-        System.out.println(compare2(filePathAstr, sentence));;
+        //System.out.println(compareValue(filePathAstr, sentence));
 
         String sentence1 = "относительно компонентов таблица имеет ошибки";
         String sentence2 = "относительно имеет ошибки";
-        compareTwo(sentence1,sentence2);
-
+        compareTwoSentence(sentence1,sentence2);
     }
 
-    public static double compare2(String filePathModel, String sentence) throws IOException {
+    public static double compareValue(String filePathModel, String sentence) throws IOException {
         double resultCompare;
-
+        // создание листа для модели
         List<String> wordsList = createDFForAnalysis(filePathModel);
+
+        // создание модели
         Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
+
+        // получение слов из созданной модели
         Collection<String> wordsInModel = word2Vec.vocab().words();
-        resultCompare = comparisons2(word2Vec, sentence, wordsInModel);
+
+        // сравнение векторов модели и предложения
+        resultCompare = comparisonsCosineSimilarity(word2Vec, sentence, wordsInModel);
 
         return resultCompare;
     }
@@ -97,29 +105,24 @@ public class AnalyzerResolutions {
         // Вычислим косинусное сходство между векторами
         return cosineSimilarity(Objects.requireNonNull(vec1), vec2);
     }
-    private static double comparisons2(Word2Vec word2Vec,String sentence1,
-                                       Collection<String> sentence2) throws IOException {
 
-        // Загружаем модель
-        WordVectors vecLoad = word2Vec;
+    private static double comparisonsCosineSimilarity(Word2Vec word2Vec, String sentence1,
+                                                      Collection<String> sentence2) throws IOException {
 
         // Разделим предложения на слова
         String[] words1 = sentence1.split(" ");
-
         String[] words2 = sentence2.toArray(new String[0]);
-        System.out.println(words2[0] + "555");
-        // Вычислим средний вектор для каждого предложения
-        INDArray vec1 = getAverageVector(words1, vecLoad);
-        INDArray vec2 = getAverageVector(words2, vecLoad);
 
-        // todo: может быть не одно решение, сделать аналитический круг или диаграмму
+        // Вычислим средний вектор для каждого
+        INDArray vec1 = getAverageVector(words1, word2Vec);
+        INDArray vec2 = getAverageVector(words2, word2Vec);
+
         // Вычислим косинусное сходство между векторами
         return cosineSimilarity(Objects.requireNonNull(vec1), vec2);
     }
 
-    // Вычислим косинусное сходство между векторами
+    // Вычисление среднего вектора предложения
     public static INDArray getAverageVector(String[] words, WordVectors wordVectors) {
-        System.out.println(words.length+"111");
 
         INDArray totalVector =
                 Nd4j.zeros(
@@ -142,7 +145,7 @@ public class AnalyzerResolutions {
         }
     }
 
-    // Вычислим косинусное сходство между векторами
+    // Вычисление косинусного сходства между векторами
     public static double cosineSimilarity(INDArray vec1, INDArray vec2) {
         double dotProduct = vec1.mul(vec2).sumNumber().doubleValue();
         double norm1 = vec1.norm2Number().doubleValue();
@@ -155,19 +158,7 @@ public class AnalyzerResolutions {
         }
     }
 
-    public static double cosineSimilarity2(INDArray vec1, INDArray vec2) {
-        double dotProduct = vec1.mul(vec2).sumNumber().doubleValue();
-        double norm1 = vec1.norm2Number().doubleValue();
-        double norm2 = vec2.norm2Number().doubleValue();
-
-        if (norm1 > 0 && norm2 > 0) {
-            return dotProduct / (norm1 * norm2);
-        } else {
-            return 0.0;
-        }
-    }
-
-    // получаем из df текст для обучения
+    // получение текста для обучения модели
     public static Collection<String> createDataForLearnModel(List <String> dataFrame) {
         Collection<String> textForLearn = new ArrayList<>();
         //System.out.println(dataFrame.col(21));
@@ -179,12 +170,17 @@ public class AnalyzerResolutions {
         }
         return textForLearn;
     }
-    // сравнение двух элементов
-    public static void compareTwo(String sentence1, String sentence2) throws IOException {
 
-        List<String> wordsList = createDFForAnalysis(filePathModel);
+    // сравнение векторов двух предложений
+    public static void compareTwoSentence(String sentence1, String sentence2) throws IOException {
+
+        // получение листа слов для обучения
+        List<String> wordsList = createDFForAnalysis(filePathAstr);
+
+        // созадние модели
         Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
 
+        // сравнение
         double comparisonsRes = compare(word2Vec, sentence1, sentence2);
         System.out.println(comparisonsRes);
     }
