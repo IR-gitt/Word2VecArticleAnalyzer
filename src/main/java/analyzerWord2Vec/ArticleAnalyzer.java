@@ -15,36 +15,35 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static analyzerWord2Vec.OperationForAnalyzedData.createDFForAnalysis;
+import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
 
-public class AnalyzerResolutions {
+public class ArticleAnalyzer {
     //final int a =
     static String filePathModel =
             "src/main/java/analyzerWord2Vec/pathToWriteto2.txt";
 
-    static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt").toString();
+    static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt")
+            .toString();
 
-    public static void main(String[] args) throws Exception {
-        startAnalyzer();
-    }
 
-    public static void startAnalyzer() throws Exception {
+    public void startAnalyzer() throws Exception {
         String sentence = "относительно компонентов таблица имеет ошибки";
 
         // todo: может быть не одно решение, сделать аналитический круг или диаграмму
         String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/law.txt").toString();
         String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt").toString();
-        //System.out.println(compareValue(filePathAstr, sentence));
+        System.out.println(compareValue(filePathAstr, sentence));
 
         String sentence1 = "относительно компонентов таблица имеет ошибки";
         String sentence2 = "относительно имеет ошибки";
-        compareTwoSentence(sentence1,sentence2);
+        cosineSimilarityTwoSentence(sentence1,sentence2);
     }
 
-    public static double compareValue(String filePathModel, String sentence) throws IOException {
+    private static double compareValue(String filePathModel, String sentence) throws IOException {
         double resultCompare;
+
         // создание листа для модели
-        List<String> wordsList = createDFForAnalysis(filePathModel);
+        List<String> wordsList = createDataForAnalysis(filePathModel);
 
         // создание модели
         Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
@@ -89,7 +88,7 @@ public class AnalyzerResolutions {
     }
 
     // Сравнение и вывод элемента с наиболее большим коэф совпадения
-    private static double compare(Word2Vec word2Vec, String sentence1, String sentence2) throws IOException {
+    private static double cosineSimilarityTwoSentence(Word2Vec word2Vec, String sentence1, String sentence2) {
 
         // Загружаем модель
         WordVectors vecLoad = word2Vec;
@@ -172,16 +171,16 @@ public class AnalyzerResolutions {
     }
 
     // сравнение векторов двух предложений
-    public static void compareTwoSentence(String sentence1, String sentence2) throws IOException {
+    public static void cosineSimilarityTwoSentence(String sentence1, String sentence2) throws IOException {
 
         // получение листа слов для обучения
-        List<String> wordsList = createDFForAnalysis(filePathAstr);
+        List<String> wordsList = createDataForAnalysis(filePathAstr);
 
         // созадние модели
         Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
 
-        // сравнение
-        double comparisonsRes = compare(word2Vec, sentence1, sentence2);
+        // вычисление косинусного сходства
+        double comparisonsRes = cosineSimilarityTwoSentence(word2Vec, sentence1, sentence2);
         System.out.println(comparisonsRes);
     }
 }

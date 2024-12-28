@@ -1,7 +1,5 @@
 package analyzerWord2Vec;
 
-import joinery.DataFrame;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -10,14 +8,11 @@ import java.util.List;
 
 public class OperationForAnalyzedData {
 
-    // Создаем датафрейм из файла для анализа
-    public static List<String> createDFForAnalysis(String filePathText) throws IOException {
-        //todo: возможно можно присвоить названия столбцам из получаемой таблицы, но пока удобнее с номерами работать
-        DataFrame<String> dataFrame = new DataFrame<>();
+    // Создаем из файла для анализа
+    public static List<String> createDataForAnalysis(String filePathText) throws IOException {
 
         List<String> content2;
 
-        StringBuilder stringBuilder2 = new StringBuilder();
         StringBuilder result = new StringBuilder();
 
         // получем текст из файла
@@ -26,12 +21,12 @@ public class OperationForAnalyzedData {
         while ((line = reader.readLine()) != null) {
             result.append(line);
         }
+
         // получим токены
         content2 = Arrays.asList(result.toString().split(" "));
 
         System.out.println(content2);
 
-        System.out.println(dataFrame.row(0));
         return content2;
     }
 
@@ -75,7 +70,6 @@ public class OperationForAnalyzedData {
         // Преобразованная строка в UTF-8
         String utf8String = result.toString();
 
-        System.out.println("Преобразованная строка в UTF-8: " + utf8String);
         return utf8String;
     }
 }
