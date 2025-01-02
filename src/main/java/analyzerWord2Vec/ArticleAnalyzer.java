@@ -20,41 +20,58 @@ import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
 public class ArticleAnalyzer {
     //final int a =
     static String filePathModel =
-            "src/main/java/analyzerWord2Vec/pathToWriteto2.txt";
+            "src/main/java/analyzerWord2Vec/fileModel.txt";
 
     static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt")
             .toString();
 
 
     public void startAnalyzer() throws Exception {
-        String sentence = "относительно компонентов таблица имеет ошибки";
+        String sentence = "отношение близких может величины";
 
         // todo: может быть не одно решение, сделать аналитический круг или диаграмму
-        String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/law.txt").toString();
-        String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt").toString();
-        System.out.println(compareValue(filePathAstr, sentence));
+
+        String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/forFit/law.txt").toString();
+        String filePathEco = Paths.get("src/main/java/analyzerWord2Vec/forFit/echonomic.txt").toString();
+        String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt").toString();
+        ArrayList <String> pathsToSets = new ArrayList<>();
+        pathsToSets.add(filePathLaw);
+        pathsToSets.add(filePathEco);
+        pathsToSets.add(filePathAstr);
+
+        
+        System.out.println(compareValue(pathsToSets, sentence));
 
         String sentence1 = "относительно компонентов таблица имеет ошибки";
         String sentence2 = "относительно имеет ошибки";
-        cosineSimilarityTwoSentence(sentence1,sentence2);
+        //cosineSimilarityTwoSentence(sentence1, sentence2);
     }
 
-    private static double compareValue(String filePathModel, String sentence) throws IOException {
-        double resultCompare;
+    private static Map<String, Double> compareValue(ArrayList <String> filePathModel, String sentence) throws IOException {
+        Map <String, Double> resultsCompare = new HashMap<>();
 
-        // создание листа для модели
-        List<String> wordsList = createDataForAnalysis(filePathModel);
+        double resultCompare = 0;
 
-        // создание модели
-        Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
+        for (String filePath: filePathModel) {
+            // разделение предложения на точки и экранирование
+            String[] modelName = filePath.split("\\\\|\\.");
 
-        // получение слов из созданной модели
-        Collection<String> wordsInModel = word2Vec.vocab().words();
+            System.out.println(modelName[6]);
+            //todo: установить название модели и значение
+            // создание набора слов для модели
+            List<String> wordsList = createDataForAnalysis(filePath);
 
-        // сравнение векторов модели и предложения
-        resultCompare = comparisonsCosineSimilarity(word2Vec, sentence, wordsInModel);
+            // создание модели
+            Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
 
-        return resultCompare;
+            // получение слов из созданной модели
+            Collection<String> wordsInModel = word2Vec.vocab().words();
+
+            // сравнение векторов модели и предложения
+            resultCompare = comparisonsCosineSimilarity(word2Vec, sentence, wordsInModel);
+            resultsCompare.put(modelName[5], resultCompare);
+        }
+        return resultsCompare;
     }
 
     //получаем значения c текстом для обучения и обучаем модель
@@ -122,15 +139,25 @@ public class ArticleAnalyzer {
 
     // Вычисление среднего вектора предложения
     public static INDArray getAverageVector(String[] words, WordVectors wordVectors) {
+        INDArray totalVector;
+        System.out.println(words[0]);
 
-        INDArray totalVector =
-                Nd4j.zeros(
-                        wordVectors.getWordVectorMatrix(words[0])
-                                .length());
+        if (wordVectors.getWordVector(words[0]) == null) {
+
+           totalVector = Nd4j.zeros(1);
+        } else {
+            totalVector =
+                    // созадние нулевого вектора для первого слова
+                    Nd4j.zeros(
+                            wordVectors.getWordVectorMatrix(words[0])
+                                    .length());
+        }
+
         int numWords = 0;
 
         for (String word : words) {
             if (wordVectors.hasWord(word)) {
+                // добавлнеие вектора к общему значению
                 totalVector.addi(
                         wordVectors.getWordVectorMatrix(word));
                 numWords++;
@@ -138,6 +165,7 @@ public class ArticleAnalyzer {
         }
 
         if (numWords > 0) {
+            // разделим на количество слов
             return totalVector.divi(numWords);
         } else {
             return null;
