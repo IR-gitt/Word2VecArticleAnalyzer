@@ -10,7 +10,6 @@ public class Application extends javafx.application.Application {
     public void start(Stage stage) throws Exception {
 
         Scene scene = new Scene(new AppPane().crAppPane(), 600, 600);
-        stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
     }

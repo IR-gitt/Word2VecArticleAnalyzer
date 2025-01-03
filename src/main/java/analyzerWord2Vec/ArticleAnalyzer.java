@@ -14,6 +14,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
 
@@ -22,13 +23,11 @@ public class ArticleAnalyzer {
     static String filePathModel =
             "src/main/java/analyzerWord2Vec/fileModel.txt";
 
-    static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/astronomy.txt")
+    static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt")
             .toString();
 
 
-    public void startAnalyzer() throws Exception {
-        String sentence = "отношение близких может величины";
-
+    public String startAnalyzer(String textForAnalyzer) throws Exception {
         // todo: может быть не одно решение, сделать аналитический круг или диаграмму
 
         String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/forFit/law.txt").toString();
@@ -39,24 +38,23 @@ public class ArticleAnalyzer {
         pathsToSets.add(filePathEco);
         pathsToSets.add(filePathAstr);
 
-        
-        System.out.println(compareValue(pathsToSets, sentence));
+        System.out.println();
 
         String sentence1 = "относительно компонентов таблица имеет ошибки";
         String sentence2 = "относительно имеет ошибки";
-        //cosineSimilarityTwoSentence(sentence1, sentence2);
+        cosineSimilarityTwoSentence(sentence1, sentence2);
+        return compareValue(pathsToSets, textForAnalyzer).toString();
     }
 
     private static Map<String, Double> compareValue(ArrayList <String> filePathModel, String sentence) throws IOException {
         Map <String, Double> resultsCompare = new HashMap<>();
 
-        double resultCompare = 0;
+        double resultCompare;
 
         for (String filePath: filePathModel) {
             // разделение предложения на точки и экранирование
             String[] modelName = filePath.split("\\\\|\\.");
 
-            System.out.println(modelName[6]);
             //todo: установить название модели и значение
             // создание набора слов для модели
             List<String> wordsList = createDataForAnalysis(filePath);
@@ -138,8 +136,10 @@ public class ArticleAnalyzer {
     }
 
     // Вычисление среднего вектора предложения
+
     public static INDArray getAverageVector(String[] words, WordVectors wordVectors) {
         INDArray totalVector;
+
         System.out.println(words[0]);
 
         if (wordVectors.getWordVector(words[0]) == null) {
@@ -173,6 +173,7 @@ public class ArticleAnalyzer {
     }
 
     // Вычисление косинусного сходства между векторами
+    //todo: при значении null падает
     public static double cosineSimilarity(INDArray vec1, INDArray vec2) {
         double dotProduct = vec1.mul(vec2).sumNumber().doubleValue();
         double norm1 = vec1.norm2Number().doubleValue();

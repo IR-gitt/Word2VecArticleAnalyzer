@@ -2,21 +2,25 @@ package analyzerWord2Vec.controllers;
 
 import analyzerWord2Vec.ArticleAnalyzer;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+
 
 public class ControllerAppPane {
     Pane pane;
     GridPane gridPane;
-    TextField textField;
+    TextArea textArea;
     Button btRun;
+    Text resultMsg;
 
-    public ControllerAppPane(Pane pane, GridPane gridPane, TextField textField, Button btRun) throws Exception {
+    public ControllerAppPane(Pane pane, GridPane gridPane, TextArea textArea, Button btRun, Text resultMsg) throws Exception {
         this.pane = pane;
         this.gridPane = gridPane;
-        this.textField = textField;
+        this.textArea = textArea;
         this.btRun = btRun;
+        this.resultMsg = resultMsg;
         initialize();
     }
 
@@ -25,12 +29,15 @@ public class ControllerAppPane {
     }
 
 
-    public void btStart() throws Exception{
+    public void btStart() throws Exception {
         btRun.setOnAction(event -> {
             ArticleAnalyzer articleAnalyzer = new ArticleAnalyzer();
-
+            String textForAnalyzer = textArea.getText();
+            textForAnalyzer = "трудового договора о дистанционной работе в отечественном трудовом праве";
             try {
-                articleAnalyzer.startAnalyzer();
+                String resultAnalyze =
+                        articleAnalyzer.startAnalyzer(textForAnalyzer);
+                resultMsg.setText(resultAnalyze);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
