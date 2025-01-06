@@ -10,26 +10,18 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFac
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
 import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
-
 public class ArticleAnalyzer {
-    //final int a =
+
     static String filePathModel =
             "src/main/java/analyzerWord2Vec/fileModel.txt";
 
-    static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt")
-            .toString();
-
-
     public String startAnalyzer(String textForAnalyzer) throws Exception {
-        // todo: может быть не одно решение, сделать аналитический круг или диаграмму
-
         String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/forFit/law.txt").toString();
         String filePathEco = Paths.get("src/main/java/analyzerWord2Vec/forFit/echonomic.txt").toString();
         String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt").toString();
@@ -38,15 +30,13 @@ public class ArticleAnalyzer {
         pathsToSets.add(filePathEco);
         pathsToSets.add(filePathAstr);
 
-        System.out.println();
-
-        String sentence1 = "относительно компонентов таблица имеет ошибки";
-        String sentence2 = "относительно имеет ошибки";
-        cosineSimilarityTwoSentence(sentence1, sentence2);
         return compareValue(pathsToSets, textForAnalyzer).toString();
     }
 
-    private static Map<String, Double> compareValue(ArrayList <String> filePathModel, String sentence) throws IOException {
+
+    private static Map<String, Double> compareValue(ArrayList <String> filePathModel, String sentence)
+            throws IOException {
+
         Map <String, Double> resultsCompare = new HashMap<>();
 
         double resultCompare;
@@ -55,7 +45,6 @@ public class ArticleAnalyzer {
             // разделение предложения на точки и экранирование
             String[] modelName = filePath.split("\\\\|\\.");
 
-            //todo: установить название модели и значение
             // создание набора слов для модели
             List<String> wordsList = createDataForAnalysis(filePath);
 
@@ -73,7 +62,7 @@ public class ArticleAnalyzer {
     }
 
     //получаем значения c текстом для обучения и обучаем модель
-    private static Word2Vec createModel(Collection<String> textForLearn)  {
+    public static Word2Vec createModel(Collection<String> textForLearn)  {
 
         SentenceIterator iter = new CollectionSentenceIterator(textForLearn);
         TokenizerFactory t = new DefaultTokenizerFactory();
@@ -102,26 +91,10 @@ public class ArticleAnalyzer {
         return vec;
     }
 
-    // Сравнение и вывод элемента с наиболее большим коэф совпадения
-    private static double cosineSimilarityTwoSentence(Word2Vec word2Vec, String sentence1, String sentence2) {
 
-        // Загружаем модель
-        WordVectors vecLoad = word2Vec;
-
-        // Разделим предложения на слова
-        String[] words1 = sentence1.split(" ");
-        String[] words2 = sentence2.split(" ");
-
-        // Вычислим средний вектор для каждого предложения
-        INDArray vec1 = getAverageVector(words1, vecLoad);
-        INDArray vec2 = getAverageVector(words2, vecLoad);
-
-        // Вычислим косинусное сходство между векторами
-        return cosineSimilarity(Objects.requireNonNull(vec1), vec2);
-    }
 
     private static double comparisonsCosineSimilarity(Word2Vec word2Vec, String sentence1,
-                                                      Collection<String> sentence2) throws IOException {
+                                                      Collection<String> sentence2){
 
         // Разделим предложения на слова
         String[] words1 = sentence1.split(" ");
@@ -189,7 +162,6 @@ public class ArticleAnalyzer {
     // получение текста для обучения модели
     public static Collection<String> createDataForLearnModel(List <String> dataFrame) {
         Collection<String> textForLearn = new ArrayList<>();
-        //System.out.println(dataFrame.col(21));
         for (Object word : dataFrame) {
             if (word != null) {
                 textForLearn.add(word.toString().toLowerCase().replaceAll(",", ""));
@@ -199,19 +171,7 @@ public class ArticleAnalyzer {
         return textForLearn;
     }
 
-    // сравнение векторов двух предложений
-    public static void cosineSimilarityTwoSentence(String sentence1, String sentence2) throws IOException {
 
-        // получение листа слов для обучения
-        List<String> wordsList = createDataForAnalysis(filePathAstr);
-
-        // созадние модели
-        Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
-
-        // вычисление косинусного сходства
-        double comparisonsRes = cosineSimilarityTwoSentence(word2Vec, sentence1, sentence2);
-        System.out.println(comparisonsRes);
-    }
 }
 
 
