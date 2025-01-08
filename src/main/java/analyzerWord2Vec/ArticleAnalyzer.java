@@ -21,7 +21,7 @@ public class ArticleAnalyzer {
     static String filePathModel =
             "src/main/java/analyzerWord2Vec/fileModel.txt";
 
-    public String startAnalyzer(String textForAnalyzer) throws Exception {
+    public  Map<String, Double> startAnalyzer(String textForAnalyzer) throws Exception {
         String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/forFit/law.txt").toString();
         String filePathEco = Paths.get("src/main/java/analyzerWord2Vec/forFit/echonomic.txt").toString();
         String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt").toString();
@@ -30,7 +30,7 @@ public class ArticleAnalyzer {
         pathsToSets.add(filePathEco);
         pathsToSets.add(filePathAstr);
 
-        return compareValue(pathsToSets, textForAnalyzer).toString();
+        return compareValue(pathsToSets, textForAnalyzer);
     }
 
 

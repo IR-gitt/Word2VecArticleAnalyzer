@@ -47,15 +47,15 @@ public class AppPane {
         GridPane gpBottomResultBP = new GridPane();
         GridPane gpCenterResultBP = new GridPane();
 
-        Text resultMsgRBP = new Text();
+        //Text resultMsgRBP = new Text();
 
         crBarChartResult();
 
         btBack = new Button("Back");
         btBack.setPrefSize(70, 30);
-
+        resultMsg = new Text();
         gpCenterResultBP.add(barChart, 0, 1);
-        gpCenterResultBP.add(resultMsgRBP, 0, 2);
+        gpCenterResultBP.add(resultMsg, 0, 2);
 
         gpBottomResultBP.add(btBack, 0, 1);
 
@@ -87,7 +87,7 @@ public class AppPane {
         GridPane gpBottomMainMenu = new GridPane();
         GridPane gpCenterMeinMenu = new GridPane();
 
-        resultMsg = new Text();
+
         btRun = new Button("Start");
         btRun.setPrefSize(70, 30);
 
@@ -96,7 +96,6 @@ public class AppPane {
         textArea.setWrapText(true);
 
         gpCenterMeinMenu.add(textArea, 0, 1);
-        gpCenterMeinMenu.add(resultMsg, 0, 2);
 
         gpBottomMainMenu.add(btRun, 0, 1);
 

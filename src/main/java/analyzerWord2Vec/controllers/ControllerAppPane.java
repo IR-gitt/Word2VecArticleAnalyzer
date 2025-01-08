@@ -9,6 +9,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+import java.util.Map;
+
 
 public class ControllerAppPane {
     Pane pane;
@@ -32,7 +34,7 @@ public class ControllerAppPane {
         initialize();
     }
 
-    private void initialize(){
+    private void initialize() {
         setActionBtStart();
         setActionBtBack();
     }
@@ -41,11 +43,10 @@ public class ControllerAppPane {
         btBack.setOnAction(event -> {
             mainBP.setVisible(true);
             resultBP.setVisible(false);
-        } );
+        });
     }
 
     public void setActionBtStart() {
-        // todo: может быть не одно решение, сделать аналитический круг или диаграмму
         btRun.setOnAction(event -> {
 
             ArticleAnalyzer articleAnalyzer = new ArticleAnalyzer();
@@ -54,10 +55,10 @@ public class ControllerAppPane {
                     "в статье рассматриваются теоретические проблемы содержания" +
                             " трудового договора о дистанционной работе в отечественном трудовом праве";
             try {
-                String resultAnalyze =
+                Map<String, Double> resultAnalyze =
                         articleAnalyzer.startAnalyzer(textForAnalyzer);
-                resultMsg.setText(resultAnalyze);
-                crXYChart();
+                resultMsg.setText("subject area of a scientific article: ");
+                crXYChart(resultAnalyze);
 
                 mainBP.setVisible(false);
                 resultBP.setVisible(true);
@@ -67,18 +68,15 @@ public class ControllerAppPane {
         });
     }
 
-    private void crXYChart() {
-        // Создаем серию данных
-        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        series1.setName("S1");
-        series1.getData().add(new XYChart.Data<>("s1", 35));
-
-        XYChart.Series<String, Number> series2 = new XYChart.Series<>();
-        series2.setName("S2");
-        series2.getData().add(new XYChart.Data<>("s2", 35));
-
-
-        barChart.getData().addAll(series1, series2);
+    private void crXYChart(Map<String, Double> resultAnalyze) {
+        for (Map.Entry<String, Double> result : resultAnalyze.entrySet()) {
+            System.out.println(result.getKey() +" " + result.getValue());
+            // Создаем серию данных
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName(result.getKey());
+            // добавляем графики
+            series.getData().add(new XYChart.Data<>(result.getKey(), result.getValue()*100));
+            barChart.getData().add(series);
+        }
     }
-
 }
