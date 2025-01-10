@@ -25,8 +25,6 @@ public class OperationForAnalyzedData {
         // получим токены
         content2 = Arrays.asList(result.toString().split(" "));
 
-        System.out.println(content2);
-
         return content2;
     }
 

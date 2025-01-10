@@ -30,7 +30,6 @@ public class AnalyzerTest {
 
         // вычисление косинусного сходства
         double comparisonsRes = cosineSimilarityTwoSentence(word2Vec, sentence1, sentence2);
-        System.out.println(comparisonsRes);
     }
 
     private static double cosineSimilarityTwoSentence(Word2Vec word2Vec, String sentence1, String sentence2) {

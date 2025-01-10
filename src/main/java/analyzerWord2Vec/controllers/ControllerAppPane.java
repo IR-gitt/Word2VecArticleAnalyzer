@@ -57,9 +57,10 @@ public class ControllerAppPane {
             try {
                 Map<String, Double> resultAnalyze =
                         articleAnalyzer.startAnalyzer(textForAnalyzer);
-                resultMsg.setText("subject area of a scientific article: ");
+                //todo: вывод наибольшего значения среди resultAnalyze
+                resultMsg.setText("Subject area of a scientific article: " +
+                        maxInCompare(resultAnalyze).getKey());
                 crXYChart(resultAnalyze);
-
                 mainBP.setVisible(false);
                 resultBP.setVisible(true);
             } catch (Exception e) {
@@ -68,14 +69,27 @@ public class ControllerAppPane {
         });
     }
 
+    private Map.Entry<String, Double> maxInCompare(Map<String, Double> resultCompare) {
+        Map.Entry<String, Double> maxValue = null;
+
+
+        for (Map.Entry<String, Double> entrySet : resultCompare.entrySet()) {
+            if (maxValue == null || maxValue.getValue() < entrySet.getValue()) {
+                maxValue = entrySet;
+            }
+        }
+        return maxValue;
+    }
+
     private void crXYChart(Map<String, Double> resultAnalyze) {
+
         for (Map.Entry<String, Double> result : resultAnalyze.entrySet()) {
-            System.out.println(result.getKey() +" " + result.getValue());
+
             // Создаем серию данных
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName(result.getKey());
-            // добавляем графики
-            series.getData().add(new XYChart.Data<>(result.getKey(), result.getValue()*100));
+            // Добавляем графики
+            series.getData().add(new XYChart.Data<>("", result.getValue() * 100));
             barChart.getData().add(series);
         }
     }

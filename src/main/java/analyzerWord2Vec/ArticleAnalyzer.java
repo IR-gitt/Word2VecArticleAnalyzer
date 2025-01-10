@@ -10,38 +10,40 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFac
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
 import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
+
 public class ArticleAnalyzer {
 
     static String filePathModel =
             "src/main/java/analyzerWord2Vec/fileModel.txt";
 
-    public  Map<String, Double> startAnalyzer(String textForAnalyzer) throws Exception {
+    public Map<String, Double> startAnalyzer(String textForAnalyzer) throws Exception {
         String filePathLaw = Paths.get("src/main/java/analyzerWord2Vec/forFit/law.txt").toString();
-        String filePathEco = Paths.get("src/main/java/analyzerWord2Vec/forFit/echonomic.txt").toString();
-        String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt").toString();
-        ArrayList <String> pathsToSets = new ArrayList<>();
+        String filePathEco = Paths.get("src/main/java/analyzerWord2Vec/forFit/economics.txt").toString();
+        String filePathAst = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt").toString();
+        ArrayList<String> pathsToSets = new ArrayList<>();
         pathsToSets.add(filePathLaw);
         pathsToSets.add(filePathEco);
-        pathsToSets.add(filePathAstr);
+        pathsToSets.add(filePathAst);
 
         return compareValue(pathsToSets, textForAnalyzer);
     }
 
 
-    private static Map<String, Double> compareValue(ArrayList <String> filePathModel, String sentence)
+    private static Map<String, Double> compareValue(ArrayList<String> filePathModel, String sentence)
             throws IOException {
 
-        Map <String, Double> resultsCompare = new HashMap<>();
+        Map<String, Double> resultsCompare = new HashMap<>();
 
         double resultCompare;
 
-        for (String filePath: filePathModel) {
+        for (String filePath : filePathModel) {
             // разделение предложения на точки и экранирование
             String[] modelName = filePath.split("\\\\|\\.");
 
@@ -62,7 +64,7 @@ public class ArticleAnalyzer {
     }
 
     //получаем значения c текстом для обучения и обучаем модель
-    public static Word2Vec createModel(Collection<String> textForLearn)  {
+    public static Word2Vec createModel(Collection<String> textForLearn) {
 
         SentenceIterator iter = new CollectionSentenceIterator(textForLearn);
         TokenizerFactory t = new DefaultTokenizerFactory();
@@ -87,15 +89,12 @@ public class ArticleAnalyzer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return vec;
     }
 
 
-
     private static double comparisonsCosineSimilarity(Word2Vec word2Vec, String sentence1,
-                                                      Collection<String> sentence2){
-
+                                                      Collection<String> sentence2) {
         // Разделим предложения на слова
         String[] words1 = sentence1.split(" ");
         String[] words2 = sentence2.toArray(new String[0]);
@@ -109,15 +108,12 @@ public class ArticleAnalyzer {
     }
 
     // Вычисление среднего вектора предложения
-
     public static INDArray getAverageVector(String[] words, WordVectors wordVectors) {
         INDArray totalVector;
 
-        System.out.println(words[0]);
-
         if (wordVectors.getWordVector(words[0]) == null) {
 
-           totalVector = Nd4j.zeros(1);
+            totalVector = Nd4j.zeros(1);
         } else {
             totalVector =
                     // созадние нулевого вектора для первого слова
@@ -160,18 +156,15 @@ public class ArticleAnalyzer {
     }
 
     // получение текста для обучения модели
-    public static Collection<String> createDataForLearnModel(List <String> dataFrame) {
+    public static Collection<String> createDataForLearnModel(List<String> dataFrame) {
         Collection<String> textForLearn = new ArrayList<>();
         for (Object word : dataFrame) {
             if (word != null) {
                 textForLearn.add(word.toString().toLowerCase().replaceAll(",", ""));
-                System.out.println(word);
             }
         }
         return textForLearn;
     }
-
-
 }
 
 

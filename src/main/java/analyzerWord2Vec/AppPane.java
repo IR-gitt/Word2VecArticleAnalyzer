@@ -1,7 +1,10 @@
 package analyzerWord2Vec;
 
 import analyzerWord2Vec.controllers.ControllerAppPane;
+import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -9,9 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import lombok.Getter;
 
-// todo: сделать польз интерфейс и вывод аналитического круга или диаграммы
 public class AppPane {
     @Getter
     BorderPane mainBP;
@@ -46,19 +49,20 @@ public class AppPane {
 
         GridPane gpBottomResultBP = new GridPane();
         GridPane gpCenterResultBP = new GridPane();
-
-        //Text resultMsgRBP = new Text();
-
+        gpBottomResultBP.setGridLinesVisible(true);
+        gpCenterResultBP.setGridLinesVisible(true);
         crBarChartResult();
 
         btBack = new Button("Back");
         btBack.setPrefSize(70, 30);
+
         resultMsg = new Text();
-        gpCenterResultBP.add(barChart, 0, 1);
-        gpCenterResultBP.add(resultMsg, 0, 2);
 
-        gpBottomResultBP.add(btBack, 0, 1);
-
+        gpCenterResultBP.add(barChart, 0, 0);
+        gpBottomResultBP.add(resultMsg, 0, 1);
+        gpBottomResultBP.add(btBack, 0, 2);
+        GridPane.setHalignment(btBack, HPos.CENTER);
+        GridPane.setHalignment(barChart, HPos.CENTER);
         gpBottomResultBP.setAlignment(Pos.CENTER);
         gpCenterResultBP.setAlignment(Pos.CENTER);
 
@@ -68,16 +72,18 @@ public class AppPane {
         resultBP.setVisible(false);
     }
 
+    // создание BarCart
     private void crBarChartResult() {
+        // Создаем оси xy
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
+        xAxis.setTickLabelRotation(45);
         xAxis.setLabel("Вид");
         yAxis.setLabel("Значение");
 
-        // Создаем столбчатый график
+        // Создаем столбчатый график и добавляем в него оси
         barChart = new BarChart<>(xAxis, yAxis);
         barChart.setTitle(" ");
-
     }
 
     private void crMainBP() {
@@ -87,16 +93,17 @@ public class AppPane {
         GridPane gpBottomMainMenu = new GridPane();
         GridPane gpCenterMeinMenu = new GridPane();
 
-
         btRun = new Button("Start");
+        Platform.runLater(
+                () -> btRun.requestFocus());
         btRun.setPrefSize(70, 30);
 
         textArea = new TextArea();
+        textArea.setPromptText("Press or inset text");
         textArea.setPrefSize(500, 300);
         textArea.setWrapText(true);
 
         gpCenterMeinMenu.add(textArea, 0, 1);
-
         gpBottomMainMenu.add(btRun, 0, 1);
 
         gpBottomMainMenu.setAlignment(Pos.CENTER);
