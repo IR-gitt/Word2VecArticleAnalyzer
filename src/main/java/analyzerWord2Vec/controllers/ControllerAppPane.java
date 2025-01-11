@@ -51,13 +51,13 @@ public class ControllerAppPane {
 
             ArticleAnalyzer articleAnalyzer = new ArticleAnalyzer();
             String textForAnalyzer = textArea.getText();
-            textForAnalyzer =
-                    "в статье рассматриваются теоретические проблемы содержания" +
-                            " трудового договора о дистанционной работе в отечественном трудовом праве";
+//            //textForAnalyzer =
+//                    "в статье рассматриваются теоретические проблемы содержания" +
+//                            " трудового договора о дистанционной работе в отечественном трудовом праве";
             try {
                 Map<String, Double> resultAnalyze =
                         articleAnalyzer.startAnalyzer(textForAnalyzer);
-                //todo: вывод наибольшего значения среди resultAnalyze
+
                 resultMsg.setText("Subject area of a scientific article: " +
                         maxInCompare(resultAnalyze).getKey());
                 crXYChart(resultAnalyze);

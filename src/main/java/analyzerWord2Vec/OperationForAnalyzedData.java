@@ -4,28 +4,42 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OperationForAnalyzedData {
 
     // Создаем из файла для анализа
-    public static List<String> createDataForAnalysis(String filePathText) throws IOException {
+    public static List<String> createTokensForAnalysis(String filePathText) throws IOException {
 
-        List<String> content2;
-
-        StringBuilder result = new StringBuilder();
+        StringBuilder text = new StringBuilder();
 
         // получем текст из файла
         BufferedReader reader = new BufferedReader(new FileReader(filePathText));
         String line;
         while ((line = reader.readLine()) != null) {
-            result.append(line);
+            text.append(line);
         }
 
-        // получим токены
-        content2 = Arrays.asList(result.toString().split(" "));
+        // Список стоп-слов
+        Set<String> stopWords = new HashSet<>(Arrays.asList(
+                ",", "^", "%", "нужно", "удалить"
+        ));
+        //"[^a-zA-Z0-9_а-яА-Я]+"
+        // Разделить текст на слова
+        List<String> words = Arrays.asList(text.toString().toLowerCase().split("[^a-zA-Z_а-яА-Я]+"));
 
-        return content2;
+        // Удалить стоп-слова
+        List<String> filteredWords = words.stream()
+                .filter(word -> !stopWords.contains(word))
+                .collect(Collectors.toList());
+
+        // Удалим слова меньше трех символов
+        filteredWords.removeIf(word -> word.length() <= 3);
+
+        return filteredWords;
     }
 
     // получение содержимого файла по ссылке

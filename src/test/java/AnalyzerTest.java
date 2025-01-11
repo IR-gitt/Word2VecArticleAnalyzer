@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static analyzerWord2Vec.ArticleAnalyzer.*;
-import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
+import static analyzerWord2Vec.OperationForAnalyzedData.createTokensForAnalysis;
 
 public class AnalyzerTest {
     static String filePathAstr = Paths.get("src/main/java/analyzerWord2Vec/forFit/astronomy.txt")
@@ -23,7 +23,7 @@ public class AnalyzerTest {
         String sentence1 = "относительно компонентов таблица имеет ошибки";
         String sentence2 = "относительно имеет ошибки";
         // получение листа слов для обучения
-        List<String> wordsList = createDataForAnalysis(filePathAstr);
+        List<String> wordsList = createTokensForAnalysis(filePathAstr);
 
         // созадние модели
         Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));

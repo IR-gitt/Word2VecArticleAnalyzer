@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
-import static analyzerWord2Vec.OperationForAnalyzedData.createDataForAnalysis;
+import static analyzerWord2Vec.OperationForAnalyzedData.createTokensForAnalysis;
 
 public class ArticleAnalyzer {
 
@@ -31,7 +31,7 @@ public class ArticleAnalyzer {
         pathsToSets.add(filePathLaw);
         pathsToSets.add(filePathEco);
         pathsToSets.add(filePathAst);
-
+        System.out.println(textForAnalyzer+"1111");
         return compareValue(pathsToSets, textForAnalyzer);
     }
 
@@ -48,10 +48,11 @@ public class ArticleAnalyzer {
             String[] modelName = filePath.split("\\\\|\\.");
 
             // создание набора слов для модели
-            List<String> wordsList = createDataForAnalysis(filePath);
+            Collection<String> wordsList = createDataForLearnModel(createTokensForAnalysis(filePath));
 
+            //Collection<String> words = wordsList);
             // создание модели
-            Word2Vec word2Vec = createModel(createDataForLearnModel(wordsList));
+            Word2Vec word2Vec = createModel(wordsList);
 
             // получение слов из созданной модели
             Collection<String> wordsInModel = word2Vec.vocab().words();
@@ -73,10 +74,10 @@ public class ArticleAnalyzer {
         // Обучение модели
         Word2Vec vec = new Word2Vec.Builder()
                 .minWordFrequency(5)
-                .iterations(5)
+                .iterations(10)
                 .layerSize(100)
-                .seed(42)
-                .windowSize(5)
+                .seed(1)
+                .windowSize(3)
                 .iterate(iter)
                 .tokenizerFactory(t)
                 .build();
@@ -97,10 +98,12 @@ public class ArticleAnalyzer {
                                                       Collection<String> sentence2) {
         // Разделим предложения на слова
         String[] words1 = sentence1.split(" ");
+
         String[] words2 = sentence2.toArray(new String[0]);
 
         // Вычислим средний вектор для каждого
         INDArray vec1 = getAverageVector(words1, word2Vec);
+
         INDArray vec2 = getAverageVector(words2, word2Vec);
 
         // Вычислим косинусное сходство между векторами
@@ -110,7 +113,8 @@ public class ArticleAnalyzer {
     // Вычисление среднего вектора предложения
     public static INDArray getAverageVector(String[] words, WordVectors wordVectors) {
         INDArray totalVector;
-
+        System.out.println(words[0]);
+        System.out.println(wordVectors);
         if (wordVectors.getWordVector(words[0]) == null) {
 
             totalVector = Nd4j.zeros(1);
