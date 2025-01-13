@@ -4,7 +4,6 @@ import analyzerWord2Vec.controllers.ControllerAppPane;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -12,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import lombok.Getter;
 
 public class AppPane {
@@ -49,8 +47,7 @@ public class AppPane {
 
         GridPane gpBottomResultBP = new GridPane();
         GridPane gpCenterResultBP = new GridPane();
-        gpBottomResultBP.setGridLinesVisible(true);
-        gpCenterResultBP.setGridLinesVisible(true);
+
         crBarChartResult();
 
         btBack = new Button("Back");
@@ -66,6 +63,8 @@ public class AppPane {
         gpBottomResultBP.setAlignment(Pos.CENTER);
         gpCenterResultBP.setAlignment(Pos.CENTER);
 
+        gpBottomResultBP.setHgap(10);
+        gpBottomResultBP.setVgap(10);
         resultBP.setCenter(gpCenterResultBP);
         resultBP.setBottom(gpBottomResultBP);
 
@@ -78,8 +77,8 @@ public class AppPane {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         xAxis.setTickLabelRotation(45);
-        xAxis.setLabel("Вид");
-        yAxis.setLabel("Значение");
+        xAxis.setLabel("Type");
+        yAxis.setLabel("Value");
 
         // Создаем столбчатый график и добавляем в него оси
         barChart = new BarChart<>(xAxis, yAxis);

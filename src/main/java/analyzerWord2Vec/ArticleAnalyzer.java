@@ -31,7 +31,6 @@ public class ArticleAnalyzer {
         pathsToSets.add(filePathLaw);
         pathsToSets.add(filePathEco);
         pathsToSets.add(filePathAst);
-        System.out.println(textForAnalyzer+"1111");
         return compareValue(pathsToSets, textForAnalyzer);
     }
 
