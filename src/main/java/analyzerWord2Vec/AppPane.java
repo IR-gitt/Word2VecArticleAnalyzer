@@ -9,106 +9,135 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import lombok.Getter;
 
+/**
+ * Main application pane that contains UI components for text analysis.
+ * Uses JavaFX for GUI rendering with two main views: input and results.
+ */
 public class AppPane {
+
     @Getter
-    BorderPane mainBP;
-    BorderPane resultBP;
-    BarChart<String, Number> barChart;
-    TextArea textArea;
-    Text resultMsg;
-    Button btRun;
-    Button btBack;
-    ControllerAppPane controllerAppPane;
+    private BorderPane mainBP;
+    private BorderPane resultBP;
+    private BarChart<String, Number> barChart;
+    private TextArea textArea;
+    private Text resultMsg;
+    private Button btRun;
+    private Button btBack;
+    private ControllerAppPane controllerAppPane;
 
+    private static final int PANE_WIDTH = 600;
+    private static final int PANE_HEIGHT = 500;
+    private static final int BUTTON_WIDTH = 70;
+    private static final int BUTTON_HEIGHT = 30;
+    private static final int TEXT_AREA_WIDTH = 500;
+    private static final int TEXT_AREA_HEIGHT = 300;
 
-    public Pane crAppPane() throws Exception {
+    /**
+     * Creates and initializes the application pane with all UI components.
+     *
+     * @return initialized Pane with main and result views
+     * @throws Exception if controller initialization fails
+     */
+    public Pane createAppPane() throws Exception {
+        var pane = new Pane();
+        pane.setPrefSize(PANE_WIDTH, PANE_HEIGHT);
 
-        Pane pane = new Pane();
-        pane.setPrefSize(600, 500);
-        crMainBP();
-        crResultBP();
+        createMainBorderPane();
+        createResultBorderPane();
 
         pane.getChildren().addAll(mainBP, resultBP);
 
-        controllerAppPane = new ControllerAppPane
-                (pane, mainBP, resultBP, textArea, barChart, btRun, btBack, resultMsg);
+        controllerAppPane = new ControllerAppPane(
+                pane, mainBP, resultBP, textArea,
+                barChart, btRun, btBack, resultMsg
+        );
 
         return pane;
     }
 
-    private void crResultBP() {
-
+    /**
+     * Creates the result view with bar chart and navigation.
+     */
+    private void createResultBorderPane() {
         resultBP = new BorderPane();
-        resultBP.setPrefSize(600, 500);
+        resultBP.setPrefSize(PANE_WIDTH, PANE_HEIGHT);
 
-        GridPane gpBottomResultBP = new GridPane();
-        GridPane gpCenterResultBP = new GridPane();
+        var gpBottomResultBP = new GridPane();
+        var gpCenterResultBP = new GridPane();
 
-        crBarChartResult();
+        createBarChart();
 
         btBack = new Button("Back");
-        btBack.setPrefSize(70, 30);
+        btBack.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 
         resultMsg = new Text();
 
+        // Layout configuration
         gpCenterResultBP.add(barChart, 0, 0);
         gpBottomResultBP.add(resultMsg, 0, 1);
         gpBottomResultBP.add(btBack, 0, 2);
+
         GridPane.setHalignment(btBack, HPos.CENTER);
         GridPane.setHalignment(barChart, HPos.CENTER);
+
         gpBottomResultBP.setAlignment(Pos.CENTER);
         gpCenterResultBP.setAlignment(Pos.CENTER);
-
         gpBottomResultBP.setHgap(10);
         gpBottomResultBP.setVgap(10);
+
         resultBP.setCenter(gpCenterResultBP);
         resultBP.setBottom(gpBottomResultBP);
-
         resultBP.setVisible(false);
     }
 
-    // создание BarCart
-    private void crBarChartResult() {
-        // Создаем оси xy
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        xAxis.setTickLabelRotation(45);
-        xAxis.setLabel("Type");
-        yAxis.setLabel("Value");
+    /**
+     * Creates the bar chart for displaying analysis results.
+     */
+    private void createBarChart() {
+        var xAxis = new CategoryAxis();
+        var yAxis = new NumberAxis();
 
-        // Создаем столбчатый график и добавляем в него оси
+        xAxis.setTickLabelRotation(45);
+        xAxis.setLabel("Category");
+        yAxis.setLabel("Similarity (%)");
+
         barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle(" ");
+        barChart.setTitle("Text Analysis Results");
+        barChart.setLegendVisible(true);
     }
 
-    private void crMainBP() {
+    /**
+     * Creates the main input view with text area and start button.
+     */
+    private void createMainBorderPane() {
         mainBP = new BorderPane();
-        mainBP.setPrefSize(600, 500);
+        mainBP.setPrefSize(PANE_WIDTH, PANE_HEIGHT);
 
-        GridPane gpBottomMainMenu = new GridPane();
-        GridPane gpCenterMeinMenu = new GridPane();
+        var gpBottomMainMenu = new GridPane();
+        var gpCenterMainMenu = new GridPane();
 
-        btRun = new Button("Start");
-        Platform.runLater(
-                () -> btRun.requestFocus());
-        btRun.setPrefSize(70, 30);
+        btRun = new Button("Start Analysis");
+        Platform.runLater(() -> btRun.requestFocus());
+        btRun.setPrefSize(BUTTON_WIDTH + 30, BUTTON_HEIGHT);
 
         textArea = new TextArea();
-        textArea.setPromptText("Press or inset text");
-        textArea.setPrefSize(500, 300);
+        textArea.setPromptText("Enter or paste text for analysis");
+        textArea.setPrefSize(TEXT_AREA_WIDTH, TEXT_AREA_HEIGHT);
         textArea.setWrapText(true);
 
-        gpCenterMeinMenu.add(textArea, 0, 1);
-        gpBottomMainMenu.add(btRun, 0, 1);
+        gpCenterMainMenu.add(textArea, 0, 0);
+        gpBottomMainMenu.add(btRun, 0, 0);
 
         gpBottomMainMenu.setAlignment(Pos.CENTER);
-        gpCenterMeinMenu.setAlignment(Pos.CENTER);
+        gpCenterMainMenu.setAlignment(Pos.CENTER);
 
-        mainBP.setCenter(gpCenterMeinMenu);
+        mainBP.setCenter(gpCenterMainMenu);
         mainBP.setBottom(gpBottomMainMenu);
     }
 }
